@@ -246,8 +246,8 @@ int fgetc(FILE *stream)
 {
 	// complete it
 	//if buffer is empty, do a read before grabbing from buffer
-	//stream->pos++;
-	return stream->buffer[0];
+	stream->pos++;
+	return stream->buffer[(stream->pos - 1)];
 }
 
 int fputc(int c, FILE *stream) 
