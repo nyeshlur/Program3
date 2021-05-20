@@ -212,13 +212,15 @@ FILE *fopen(const char *path, const char *mode)
 int fpurge(FILE *stream)
 {
 	// complete it
-	//close(fd)?
+	//memset(stream->buffer, '\0', stream->actual_size);
 	return 0;
 }
 
 int fflush(FILE *stream) 
 {
 	// complete it
+	//write(fd, buffer, sizeof(buffer))
+	//fpurge(stream);
 	return 0;
 }
 
@@ -243,7 +245,9 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 int fgetc(FILE *stream) 
 {
 	// complete it
-	return 0;
+	//if buffer is empty, do a read before grabbing from buffer
+	//stream->pos++;
+	return stream->buffer[0];
 }
 
 int fputc(int c, FILE *stream) 

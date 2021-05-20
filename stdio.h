@@ -1,5 +1,5 @@
-#ifndef _STDIO_H_
-#define _STDIO_H_
+#ifndef _MY_STDIO_H_
+#define _MY_STDIO_H_
 
 #define BUFSIZ 8192 // default buffer size
 #define _IONBF 0    // unbuffered
