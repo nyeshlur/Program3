@@ -273,6 +273,7 @@ int feof(FILE *stream)
 int fseek(FILE *stream, long offset, int whence) 
 {
 	// complete it
+	//lseek(fd, offset, whence);
 	return 0;
 }
 
