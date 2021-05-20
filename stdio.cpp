@@ -219,6 +219,7 @@ int fpurge(FILE *stream)
 int fflush(FILE *stream) 
 {
 	// complete it
+	//check to make sure not read only then don't write back to the file
 	//write(fd, buffer, sizeof(buffer))
 	//fpurge(stream);
 	return 0;
@@ -236,6 +237,7 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) 
 {
 	// complete it
+	//make sure access isn't read only
 	//buffer >> file;
 	//or
 	//write(fd, buffer, sizeof(buffer));
