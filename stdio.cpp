@@ -212,6 +212,8 @@ FILE *fopen(const char *path, const char *mode)
 int fpurge(FILE *stream)
 {
 	// complete it
+	//close(fd)?
+	//close(stream->fd);
 	return 0;
 }
 
@@ -224,12 +226,18 @@ int fflush(FILE *stream)
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) 
 {
 	// complete it
+	//buffer << file;
+	//or
+	//read(fd, buffer, sizeof(buffer));
 	return 0;
 }
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) 
 {
 	// complete it
+	//buffer >> file;
+	//or
+	//write(fd, buffer, sizeof(buffer));
 	return 0;
 }
 
@@ -271,5 +279,6 @@ int fseek(FILE *stream, long offset, int whence)
 int fclose(FILE *stream) 
 {
 	// complete it
+	//file.close(); or close(fd)?
 	return 0;
 }
