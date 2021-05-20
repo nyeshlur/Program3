@@ -280,6 +280,6 @@ int fseek(FILE *stream, long offset, int whence)
 int fclose(FILE *stream) 
 {
 	// complete it
-	//file.close(); or close(fd)?
+	//close(stream->fd)?
 	return 0;
 }
