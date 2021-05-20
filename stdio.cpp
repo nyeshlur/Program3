@@ -213,7 +213,6 @@ int fpurge(FILE *stream)
 {
 	// complete it
 	//close(fd)?
-	//close(stream->fd);
 	return 0;
 }
 
@@ -281,5 +280,7 @@ int fclose(FILE *stream)
 {
 	// complete it
 	//close(stream->fd)?
+	//delete stream;
+	//stream = null;
 	return 0;
 }
