@@ -219,32 +219,65 @@ int fpurge(FILE *stream) //complete it
 int fflush(FILE *stream) // complete it
 {
 	//check to make sure not read only then don't write back to the file
-	write(stream->fd, stream->buffer, stream->actual_size);
-	fpurge(stream);
+	//write(stream->fd, stream->buffer, stream->actual_size);
+	//fpurge(stream);
 	return 0;
 }
 
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
 {
-	//clear out buffer first?
-	//read(fd, buffer, sizeof(buffer));
-	return 0;
+	/*
+    ptr − This is the pointer to a block of memory with a minimum size of size*nmemb bytes.
+    size − This is the size in bytes of each element to be read.
+    nmemb − This is the number of elements, each one with a size of size bytes.
+    stream − This is the pointer to a FILE object that specifies an input stream.
+
+	Return Value
+
+	The total number of elements successfully read are returned as a size_t object, 
+	which is an integral data type. 
+	If this number differs from the nmemb parameter, 
+	then either an error had occurred or the End Of File was reached.
+	*/
+
+	int count = 0;
+	void* tracker;
+	tracker = ptr;
+	while(stream->eof != true && count <= nmemb) {
+		ptr[count] = fgetc(stream);
+	}
+	return count;
 }
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
 {
 	//make sure access isn't read only
-	if((size * nmemb) > stream->actual_size) {
+	//if((size * nmemb) > stream->actual_size) {
 
-	}
-	write(stream->fd, stream->buffer, sizeof(buffer));
+	//}
+	//write(stream->fd, stream->buffer, stream->actual_size);
 	return 0;
 }
 
 int fgetc(FILE *stream) // complete it
 {
-	//if buffer is empty, do a read before grabbing from buffer
+	int actualSize = 1;
+	if(stream->actual_size == 0)
+ 	{
+		actualSize = read(stream->fd, stream->buffer, stream->size);
+		stream->pos = 0;
+	}
+
+	if(actualSize == 0) {
+		stream->eof = true;
+		return EOF;
+	} else {
+		stream->actual_size = actualSize;
+	}
+
 	stream->pos++;
+	stream->actual_size--;
+
 	return stream->buffer[(stream->pos - 1)];
 }
 
@@ -270,15 +303,17 @@ int feof(FILE *stream)
 
 int fseek(FILE *stream, long offset, int whence) // complete it
 {
-	//lseek(fd, offset, whence);
+	//lseek(stream->fd, offset, whence);
 	return 0;
 }
 
 int fclose(FILE *stream) // complete it
 {
-	write(stream->fd, stream->buffer, stream->actual_size);
-	close(stream->fd);
-	delete stream;
-	stream = nullptr;
-	return 0;
+	//write(stream->fd, stream->buffer, stream->actual_size);
+	//or
+	//fflush
+	//close(stream->fd);
+	//delete stream;
+	//stream = nullptr;
+	//return 0;
 }
