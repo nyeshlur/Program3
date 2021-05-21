@@ -211,16 +211,27 @@ FILE *fopen(const char *path, const char *mode)
 
 int fpurge(FILE *stream) //complete it
 {
+	/*
 	memset(stream->buffer, '\0', stream->actual_size);
 	stream->pos = 0;
+	stream->actual_size = 0;
+	*/
 	return 0;
 }
 
 int fflush(FILE *stream) // complete it
 {
-	//check to make sure not read only then don't write back to the file
-	//write(stream->fd, stream->buffer, stream->actual_size);
-	//fpurge(stream);
+	/*
+	if(stream->flag == O_RDONLY)
+ 	{
+		fpurge(stream);
+
+	} else {
+
+		write(stream->fd, stream->buffer, stream->actual_size);
+		fpurge(stream);
+	}
+	*/
 	return 0;
 }
 
@@ -240,13 +251,23 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
 	then either an error had occurred or the End Of File was reached.
 	*/
 
+	//if last operation is "w"
+	//fpurge
+/*
+
 	int count = 0;
-	void* tracker;
-	tracker = ptr;
+	int character;
 	while(stream->eof != true && count <= nmemb) {
-		ptr[count] = fgetc(stream);
+		character = fgetc(stream);
+		unsigned char *buffPtr = static_cast<unsigned char *>(ptr);
+		*buffPtr++ = character;
+		count++;
 	}
-	return count;
+	
+*/
+
+	return 0;
+	//return count;
 }
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
@@ -264,6 +285,7 @@ int fgetc(FILE *stream) // complete it
 	int actualSize = 1;
 	if(stream->actual_size == 0)
  	{
+		fpurge(stream);
 		actualSize = read(stream->fd, stream->buffer, stream->size);
 		stream->pos = 0;
 	}
@@ -274,11 +296,12 @@ int fgetc(FILE *stream) // complete it
 	} else {
 		stream->actual_size = actualSize;
 	}
-
+	
+	int character = stream->buffer[stream->pos];
 	stream->pos++;
 	stream->actual_size--;
 
-	return stream->buffer[(stream->pos - 1)];
+	return character;
 }
 
 int fputc(int c, FILE *stream) // complete it
@@ -309,11 +332,9 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 
 int fclose(FILE *stream) // complete it
 {
-	//write(stream->fd, stream->buffer, stream->actual_size);
-	//or
-	//fflush
+	//fflush(stream);
 	//close(stream->fd);
 	//delete stream;
 	//stream = nullptr;
-	//return 0;
+	return 0;
 }

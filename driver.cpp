@@ -53,14 +53,21 @@ int main(int argc, char *argv[])
 	int nRead;
 	// fread test
 	printf("Testing fread...\n");
+
+	/*
 	while ((nRead = fread(buf, 1, 100, file_r)) > 0)
 	{
 		write(1, buf, nRead);
 	}
-	
+	*/
+
+/*
 	// fseek test
 	printf("Testing fseek...\n");
 	fseek(file_r, 0, SEEK_SET);
+	
+
+
 
 	// fgets test
 	printf("Testing fgets...\n");
@@ -68,7 +75,7 @@ int main(int argc, char *argv[])
 	{
 		write(1, buf, strlen(buf));
 	}
-	
+*/
 	// fgetc test
 	printf( "Testing fgetc...\n" );
 	fseek(file_r, -file_state.st_size, SEEK_END);
@@ -77,6 +84,7 @@ int main(int argc, char *argv[])
 	{
 		write(1, &c, 1);
 	}
+	
 	
 	// feof test
 	printf("Testing feof...\n");
