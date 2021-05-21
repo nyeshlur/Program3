@@ -54,12 +54,11 @@ int main(int argc, char *argv[])
 	// fread test
 	printf("Testing fread...\n");
 
-	/*
+	
 	while ((nRead = fread(buf, 1, 100, file_r)) > 0)
 	{
 		write(1, buf, nRead);
 	}
-	*/
 
 /*
 	// fseek test

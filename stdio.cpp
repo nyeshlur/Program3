@@ -235,53 +235,14 @@ int fflush(FILE *stream) // complete it
 	return 0;
 }
 
-size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
-{
-	/*
-    ptr − This is the pointer to a block of memory with a minimum size of size*nmemb bytes.
-    size − This is the size in bytes of each element to be read.
-    nmemb − This is the number of elements, each one with a size of size bytes.
-    stream − This is the pointer to a FILE object that specifies an input stream.
-
-	Return Value
-
-	The total number of elements successfully read are returned as a size_t object, 
-	which is an integral data type. 
-	If this number differs from the nmemb parameter, 
-	then either an error had occurred or the End Of File was reached.
-	*/
-
-	//if last operation is "w"
-	//fpurge
-/*
-
-	int count = 0;
-	int character;
-	while(stream->eof != true && count <= nmemb) {
-		character = fgetc(stream);
-		unsigned char *buffPtr = static_cast<unsigned char *>(ptr);
-		*buffPtr++ = character;
-		count++;
-	}
-	
-*/
-
-	return 0;
-	//return count;
-}
-
-size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
-{
-	//make sure access isn't read only
-	//if((size * nmemb) > stream->actual_size) {
-
-	//}
-	//write(stream->fd, stream->buffer, stream->actual_size);
-	return 0;
-}
-
 int fgetc(FILE *stream) // complete it
 {
+	if(stream->lastop == 'w') {
+		fpurge(stream);
+	}
+
+	stream->lastop = 'r';
+
 	int actualSize;
 	if(stream->actual_size == 0)
  	{	
@@ -302,8 +263,55 @@ int fgetc(FILE *stream) // complete it
 
 	stream->actual_size--;
 
-	return stream->buffer[stream->pos];
+	return (stream->buffer[stream->pos]);
 }
+
+size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
+{
+	/*
+    ptr − This is the pointer to a block of memory with a minimum size of size*nmemb bytes.
+    size − This is the size in bytes of each element to be read.
+    nmemb − This is the number of elements, each one with a size of size bytes.
+    stream − This is the pointer to a FILE object that specifies an input stream.
+
+	Return Value
+
+	The total number of elements successfully read are returned as a size_t object, 
+	which is an integral data type. 
+	If this number differs from the nmemb parameter, 
+	then either an error had occurred or the End Of File was reached.
+	*/
+
+
+	int count = 0;
+	int character;
+	unsigned char *buffPtr = static_cast<unsigned char *>(ptr);
+
+	while(stream->eof != true && count <= nmemb) {
+		character = fgetc(stream);
+		*buffPtr = character;
+		count++;
+		*buffPtr++;
+		
+	}
+	
+
+
+	//return 0;
+	return count;
+}
+
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
+{
+	//make sure access isn't read only
+	//if((size * nmemb) > stream->actual_size) {
+
+	//}
+	//write(stream->fd, stream->buffer, stream->actual_size);
+	return 0;
+}
+
+
 
 int fputc(int c, FILE *stream) // complete it
 {
