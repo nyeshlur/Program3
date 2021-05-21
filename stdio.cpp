@@ -211,11 +211,11 @@ FILE *fopen(const char *path, const char *mode)
 
 int fpurge(FILE *stream) //complete it
 {
-	/*
+	
 	memset(stream->buffer, '\0', stream->actual_size);
 	stream->pos = 0;
 	stream->actual_size = 0;
-	*/
+	
 	return 0;
 }
 
@@ -282,26 +282,27 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 
 int fgetc(FILE *stream) // complete it
 {
-	int actualSize = 1;
+	int actualSize;
 	if(stream->actual_size == 0)
- 	{
+ 	{	
 		fpurge(stream);
 		actualSize = read(stream->fd, stream->buffer, stream->size);
+		stream->actual_size = actualSize;
+
+		if(actualSize == 0) {
+			stream->eof = true;
+			return EOF;
+		}
+
 		stream->pos = 0;
+
+	} else {
+		stream->pos++;
 	}
 
-	if(actualSize == 0) {
-		stream->eof = true;
-		return EOF;
-	} else {
-		stream->actual_size = actualSize;
-	}
-	
-	int character = stream->buffer[stream->pos];
-	stream->pos++;
 	stream->actual_size--;
 
-	return character;
+	return stream->buffer[stream->pos];
 }
 
 int fputc(int c, FILE *stream) // complete it
