@@ -221,17 +221,22 @@ int fpurge(FILE *stream) //complete it
 
 int fflush(FILE *stream) // complete it
 {
-	/*
+	
 	if(stream->flag == O_RDONLY)
  	{
 		fpurge(stream);
 
-	} else {
+	} 
+	else if (stream->lastop == 'r')
+	{
+		fpurge(stream);
+	}
+	else {
 
 		write(stream->fd, stream->buffer, stream->actual_size);
 		fpurge(stream);
 	}
-	*/
+	
 	return 0;
 }
 
@@ -261,7 +266,7 @@ int fgetc(FILE *stream) // complete it
 		stream->pos++;
 	}
 
-	stream->actual_size--; //I think this needs to be decremented by size of char? or no because getc always gets 1 byte?
+	stream->actual_size--;
 
 	return (stream->buffer[stream->pos]);
 }
@@ -298,7 +303,20 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 
 int fputc(int c, FILE *stream) // complete it
 {
-	return 0;
+	if(stream->flag == O_RDONLY)
+	{
+		return EOF;
+	}
+
+	if(stream->lastop == 'r')
+ 	{
+		fpurge(stream);
+ 	}
+	stream->lastop = 'w';
+
+	stream->buffer[stream->pos] = c;
+	stream->pos++;
+	return c;
 }
 
 char *fgets(char *str, int size, FILE *stream) // complete it
@@ -330,6 +348,10 @@ char *fgets(char *str, int size, FILE *stream) // complete it
 
 int fputs(const char *str, FILE *stream) // complete it
 {
+	if(stream->flag == O_RDONLY)
+	{
+		return EOF;
+	}
 	return 0;
 }
 
