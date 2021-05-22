@@ -261,44 +261,29 @@ int fgetc(FILE *stream) // complete it
 		stream->pos++;
 	}
 
-	stream->actual_size--;
+	stream->actual_size--; //I think this needs to be decremented by size of char? or no because getc always gets 1 byte?
 
 	return (stream->buffer[stream->pos]);
 }
 
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
 {
-	/*
-    ptr − This is the pointer to a block of memory with a minimum size of size*nmemb bytes.
-    size − This is the size in bytes of each element to be read.
-    nmemb − This is the number of elements, each one with a size of size bytes.
-    stream − This is the pointer to a FILE object that specifies an input stream.
-
-	Return Value
-
-	The total number of elements successfully read are returned as a size_t object, 
-	which is an integral data type. 
-	If this number differs from the nmemb parameter, 
-	then either an error had occurred or the End Of File was reached.
-	*/
-
-
-	int count = 0;
+	size_t count = 0;
 	int character;
 	unsigned char *buffPtr = static_cast<unsigned char *>(ptr);
 
-	while(stream->eof != true && count <= nmemb) {
+	while(stream->eof != true && count < (nmemb * size)) {
 		character = fgetc(stream);
-		*buffPtr = character;
-		count++;
-		*buffPtr++;
+		if(stream->eof != true) 
+		{
+			*buffPtr = character;
+			count++;
+			*buffPtr++;
+		}
 		
 	}
 	
-
-
-	//return 0;
-	return count;
+	return count / size;
 }
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
@@ -311,8 +296,6 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 	return 0;
 }
 
-
-
 int fputc(int c, FILE *stream) // complete it
 {
 	return 0;
@@ -320,7 +303,29 @@ int fputc(int c, FILE *stream) // complete it
 
 char *fgets(char *str, int size, FILE *stream) // complete it
 {
-	return NULL;
+	char temp = fgetc(stream);
+
+	if(temp == EOF) 
+	{
+		return NULL;
+
+	} else 
+	{
+		str[0] = temp;
+		for(int i = 1; i < size; i++) 
+		{
+			temp = fgetc(stream);
+
+			if(temp != EOF) 
+			{
+				str[i] = temp;
+			}
+		}
+
+		return str;
+
+	}
+
 }
 
 int fputs(const char *str, FILE *stream) // complete it
