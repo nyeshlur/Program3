@@ -49,32 +49,29 @@ int main(int argc, char *argv[])
 	char vbuf[40];
 	setvbuf( file_r, vbuf, _IOFBF, 40 );
 
+
 	char buf[100];
 	int nRead;
+	
 	// fread test
 	printf("Testing fread...\n");
-
-/*	
 	while ((nRead = fread(buf, 1, 100, file_r)) > 0)
 	{
 		write(1, buf, nRead);
 	}
-
-
+	
 	// fseek test
 	printf("Testing fseek...\n");
 	fseek(file_r, 0, SEEK_SET);
-	
 
-
-*/
+/*
 	// fgets test
 	printf("Testing fgets...\n");
 	while (fgets(buf, 100, file_r) != NULL)
 	{
 		write(1, buf, strlen(buf));
 	}
-/*
+*/
 	// fgetc test
 	printf( "Testing fgetc...\n" );
 	fseek(file_r, -file_state.st_size, SEEK_END);
@@ -83,8 +80,7 @@ int main(int argc, char *argv[])
 	{
 		write(1, &c, 1);
 	}
-	
-*/	
+
 	// feof test
 	printf("Testing feof...\n");
 	eof = feof(file_r);
@@ -96,6 +92,7 @@ int main(int argc, char *argv[])
 	retval = fstat(3, &file_state);
 	printf("fstat = %d\n", retval);
 
+/*
 	// fopen test
 	printf("Testing fopen(w)...\n");
 	FILE *file_w1 = fopen("test1.txt", "w");
@@ -161,6 +158,6 @@ int main(int argc, char *argv[])
 	fclose(file_w4);
 	retval = fstat(3, &file_state);
 	printf("d = %d, fstat = %d\n", 3, retval);
-	
+	*/
 	return 0;
 }

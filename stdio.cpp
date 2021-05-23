@@ -5,7 +5,8 @@
 #include <strings.h>
 #include <string.h>
 #include <stdarg.h>   
-#include <stdlib.h>    
+#include <stdlib.h>   
+#include "stdio.h" 
 using namespace std;
 
 char decimal[100];
@@ -249,7 +250,7 @@ int fgetc(FILE *stream) // complete it
 	stream->lastop = 'r';
 
 	int actualSize;
-	if(stream->actual_size == 0)
+	if(stream->actual_size == 0 && stream->pos != 0)
  	{	
 		fpurge(stream);
 		actualSize = read(stream->fd, stream->buffer, stream->size);
@@ -261,14 +262,23 @@ int fgetc(FILE *stream) // complete it
 		}
 
 		stream->pos = 0;
+		stream->actual_size--;
+		return (stream->buffer[stream->pos]);
 
-	} else {
+	}else 
+	{
 		stream->pos++;
+		stream->actual_size--;
+		return (stream->buffer[stream->pos]);
 	}
 
-	stream->actual_size--;
 
-	return (stream->buffer[stream->pos]);
+	if (stream->actual_size != 0 && stream->pos == 0)
+	{
+		stream->actual_size--;
+		return (stream->buffer[stream->pos]);
+
+	} 
 }
 
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
@@ -303,6 +313,7 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 
 int fputc(int c, FILE *stream) // complete it
 {
+	/*
 	if(stream->flag == O_RDONLY)
 	{
 		return EOF;
@@ -317,6 +328,8 @@ int fputc(int c, FILE *stream) // complete it
 	stream->buffer[stream->pos] = c;
 	stream->pos++;
 	return c;
+	*/
+	return 0;
 }
 
 char *fgets(char *str, int size, FILE *stream) // complete it
@@ -348,10 +361,13 @@ char *fgets(char *str, int size, FILE *stream) // complete it
 
 int fputs(const char *str, FILE *stream) // complete it
 {
+	/*
 	if(stream->flag == O_RDONLY)
 	{
 		return EOF;
 	}
+
+	*/
 	return 0;
 }
 
@@ -362,8 +378,46 @@ int feof(FILE *stream)
 
 int fseek(FILE *stream, long offset, int whence) // complete it
 {
-	//lseek(stream->fd, offset, whence);
-	return 0;
+	//check to see if offset is negative or positive
+	//could potentially have to go backwards or forwards
+
+	if(offset == 0 && whence == SEEK_SET) 
+	{
+		fpurge(stream);
+		lseek(stream->fd, offset, SEEK_SET);
+		int size;
+		size = read(stream->fd, stream->buffer, stream->size);
+		stream->pos = 0;
+		stream->actual_size = size;
+		return 0;
+
+	} else {
+		return 0;
+	}
+
+	/*
+	else
+	{
+		while(offset > 0) 
+		{
+			if(offset <= stream->actual_size) 
+			{
+				stream->actual_size = stream->actual_size + offset;
+				stream->pos = stream->pos + offset;
+				return 0;
+			} else
+			{
+				offset = offset - stream->actual_size;
+				lseek(stream->fd, offset, whence);
+				read(stream->fd, stream->buffer, stream->size);
+			}
+
+		}
+
+		return 0;
+	}
+	*/
+	//while(offset < 0) {}
 }
 
 int fclose(FILE *stream) // complete it
