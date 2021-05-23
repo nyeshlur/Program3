@@ -381,19 +381,15 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 	if(offset == 0 && whence == SEEK_SET) 
 	{
 		fpurge(stream);
-		lseek(stream->fd, offset, SEEK_SET);
+		lseek(stream->fd, offset, whence);
 		int size;
 		size = read(stream->fd, stream->buffer, stream->size);
 		stream->pos = 0;
 		stream->actual_size = size;
 		return 0;
 
-	} else {
-		return 0;
 	}
-
-	/*
-	else
+	else if (offset > 0)
 	{
 		while(offset > 0) 
 		{
@@ -401,20 +397,27 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 			{
 				stream->actual_size = stream->actual_size + offset;
 				stream->pos = stream->pos + offset;
-				return 0;
+				offset = offset - stream->actual_size;
 			} else
 			{
 				offset = offset - stream->actual_size;
 				lseek(stream->fd, offset, whence);
-				read(stream->fd, stream->buffer, stream->size);
+				int size;
+				size = read(stream->fd, stream->buffer, stream->size);
+				stream->pos = 0;
+				stream->actual_size = size;
 			}
 
 		}
-
 		return 0;
+	} 
+	else
+	{
+		while(offset < 0) {
+
+			if((offset * -1) <= (stream->size - stream->actual_size)
+		}
 	}
-	*/
-	//while(offset < 0) {}
 }
 
 int fclose(FILE *stream) // complete it
