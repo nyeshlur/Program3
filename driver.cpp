@@ -68,10 +68,6 @@ int main(int argc, char *argv[])
 	{
 		write(1, buf, strlen(buf));
 	}
-
-	// fseek test
-	printf("Testing fseek...\n");
-	fseek(file_r, 0, SEEK_SET);
 	
 	// fgetc test
 	printf( "Testing fgetc...\n" );
@@ -92,7 +88,7 @@ int main(int argc, char *argv[])
 	fclose(file_r);
 	retval = fstat(3, &file_state);
 	printf("fstat = %d\n", retval);
-/*
+
 	// fopen test
 	printf("Testing fopen(w)...\n");
 	FILE *file_w1 = fopen("test1.txt", "w");
@@ -158,6 +154,7 @@ int main(int argc, char *argv[])
 	fclose(file_w4);
 	retval = fstat(3, &file_state);
 	printf("d = %d, fstat = %d\n", 3, retval);
-*/	
+	
 	return 0;
 }
+
