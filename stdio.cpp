@@ -310,8 +310,8 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 
 int fputc(int c, FILE *stream) // complete it
 {
-	/*
-	if(stream->flag == O_RDONLY)
+	
+	if(stream->flag == O_RDONLY || stream->actual_size == 0)
 	{
 		return EOF;
 	}
@@ -325,7 +325,7 @@ int fputc(int c, FILE *stream) // complete it
 	stream->buffer[stream->pos] = c;
 	stream->pos++;
 	return c;
-	*/
+	
 	return 0;
 }
 
