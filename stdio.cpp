@@ -250,7 +250,7 @@ int fgetc(FILE *stream) // complete it
 	stream->lastop = 'r';
 
 	int actualSize;
-	if(stream->actual_size == 0 && stream->pos != 0)
+	if(stream->actual_size == 0)
  	{	
 		fpurge(stream);
 		actualSize = read(stream->fd, stream->buffer, stream->size);
@@ -262,23 +262,15 @@ int fgetc(FILE *stream) // complete it
 		}
 
 		stream->pos = 0;
-		stream->actual_size--;
-		return (stream->buffer[stream->pos]);
 
 	}else 
 	{
 		stream->pos++;
-		stream->actual_size--;
-		return (stream->buffer[stream->pos]);
 	}
 
-
-	if (stream->actual_size != 0 && stream->pos == 0)
-	{
 		stream->actual_size--;
 		return (stream->buffer[stream->pos]);
 
-	} 
 }
 
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
