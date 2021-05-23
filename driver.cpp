@@ -101,9 +101,7 @@ int main(int argc, char *argv[])
 		printf( "fd = %d, fstat = %d, file size = %d\n", i, retval, file_state.st_size );
 	}
 	
-	//char *data = init_data();
-
-	char data = c;
+	char *data = init_data();
 	
 	// fwrite test
 	printf("Testing fwrite...\n");
@@ -123,10 +121,8 @@ int main(int argc, char *argv[])
 	printf("Testing fputc...\n");
 	for (int i = 0; i < DATASIZE; i++)
 	{
-		//fputc(data[i], file_w3);
-		fputc(data, file_w3);
+		fputc(data[i], file_w3);
 	}
-	
 	
 	// fclose test
 	printf("Testing fclose...\n");
@@ -161,4 +157,5 @@ int main(int argc, char *argv[])
 	
 	return 0;
 }
+
 
