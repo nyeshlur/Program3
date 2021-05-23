@@ -234,7 +234,7 @@ int fflush(FILE *stream) // complete it
 	}
 	else {
 
-		write(stream->fd, stream->buffer, stream->actual_size);
+		write(stream->fd, stream->buffer, stream->size);
 		fpurge(stream);
 	}
 	
@@ -311,22 +311,28 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 int fputc(int c, FILE *stream) // complete it
 {
 	
-	if(stream->flag == O_RDONLY || stream->actual_size == 0)
+	if(stream->flag == O_RDONLY)
 	{
 		return EOF;
 	}
 
-	if(stream->lastop == 'r')
- 	{
+	if(stream->lastop == 'r') 
+	{
 		fpurge(stream);
- 	}
+	}
+
 	stream->lastop = 'w';
+
+	if((stream->size - (stream->pos + 1)) == 0) 
+	{
+		fflush(stream);
+
+	}
 
 	stream->buffer[stream->pos] = c;
 	stream->pos++;
-	return c;
 	
-	return 0;
+	return c;
 }
 
 char *fgets(char *str, int size, FILE *stream) // complete it
@@ -335,6 +341,7 @@ char *fgets(char *str, int size, FILE *stream) // complete it
 
 	if(temp == EOF) 
 	{
+		stream->eof = true;
 		return NULL;
 
 	} else 
@@ -386,6 +393,7 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 		size = read(stream->fd, stream->buffer, stream->size);
 		stream->pos = 0;
 		stream->actual_size = size;
+		stream->eof = false;
 		return 0;
 
 	}
