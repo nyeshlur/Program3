@@ -250,6 +250,7 @@ int fgetc(FILE *stream) // complete it
 	stream->lastop = 'r';
 
 	int actualSize;
+	char character;
 	if(stream->actual_size == 0)
  	{	
 		fpurge(stream);
@@ -262,14 +263,18 @@ int fgetc(FILE *stream) // complete it
 		}
 
 		stream->pos = 0;
-
-	}else 
-	{
-		stream->pos++;
-	}
-
+		character = stream->buffer[stream->pos];
 		stream->actual_size--;
-		return (stream->buffer[stream->pos]);
+		stream->pos++;
+		return character;
+
+	} else
+	{
+		character = stream->buffer[stream->pos];
+		stream->pos++;
+		stream->actual_size--;
+		return character;
+	}
 
 }
 
