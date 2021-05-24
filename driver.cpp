@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 	}
 	
 	char *data = init_data();
-	
+	/*
 	// fwrite test
 	printf("Testing fwrite...\n");
 	for (int i = 0; i < DATASIZE; i += BUFSIZE)
@@ -116,10 +116,10 @@ int main(int argc, char *argv[])
 	{
 		fputs(contents, file_w2);
 	}
-	
+	*/
 	// fputc test
 	printf("Testing fputc...\n");
-	for (int i = 0; i < DATASIZE; i++)
+	for (int i = 0; i < 8193; i++) //DATASIZE
 	{
 		fputc(data[i], file_w3);
 	}

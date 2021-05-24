@@ -210,7 +210,7 @@ FILE *fopen(const char *path, const char *mode)
   return stream;
 }
 
-int fpurge(FILE *stream) //complete it
+int fpurge(FILE *stream)
 {
 	
 	memset(stream->buffer, '\0', stream->actual_size);
@@ -218,9 +218,11 @@ int fpurge(FILE *stream) //complete it
 	stream->actual_size = 0;
 	
 	return 0;
+
+	//if error occurs return -1, when would an error occur?
 }
 
-int fflush(FILE *stream) // complete it
+int fflush(FILE *stream)
 {
 	
 	if(stream->flag == O_RDONLY)
@@ -239,9 +241,11 @@ int fflush(FILE *stream) // complete it
 	}
 	
 	return 0;
+
+	//if error occurs return EOF, when would an error occur?
 }
 
-int fgetc(FILE *stream) // complete it
+int fgetc(FILE *stream)
 {
 	if(stream->lastop == 'w') {
 		fpurge(stream);
@@ -259,7 +263,7 @@ int fgetc(FILE *stream) // complete it
 
 		if(actualSize == 0) {
 			stream->eof = true;
-			return EOF;
+			return EOF; //what other cases should return EOF?
 		}
 
 		stream->pos = 0;
@@ -299,7 +303,9 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
 }
 
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
-{
+{	
+	//append mode?
+	
 	//make sure access isn't read only
 	//if((size * nmemb) > stream->actual_size) {
 
@@ -310,6 +316,7 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 
 int fputc(int c, FILE *stream) // complete it
 {
+	//append mode?
 	
 	if(stream->flag == O_RDONLY)
 	{
@@ -337,7 +344,7 @@ int fputc(int c, FILE *stream) // complete it
 	return c;
 }
 
-char *fgets(char *str, int size, FILE *stream) // complete it
+char *fgets(char *str, int size, FILE *stream)
 {
 	char temp = fgetc(stream);
 
@@ -367,8 +374,7 @@ char *fgets(char *str, int size, FILE *stream) // complete it
 
 int fputs(const char *str, FILE *stream) // complete it
 {
-	int length = sizeof(str);
-	
+	//append mode?
 	if(stream->flag == O_RDONLY)
 	{
 		return EOF;
@@ -396,7 +402,7 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 	//check to see if offset is negative or positive
 	//could potentially have to go backwards or forwards
 
-	if(offset == 0 && whence == SEEK_SET) 
+	if(offset == 0 && whence == SEEK_SET) //deal with offset == 0 and whence == SEEK_END?
 	{
 		fpurge(stream);
 		lseek(stream->fd, offset, whence);
@@ -444,9 +450,9 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 
 int fclose(FILE *stream) // complete it
 {
-	//fflush(stream);
-	//close(stream->fd);
-	//delete stream;
-	//stream = nullptr;
+	fflush(stream);
+	close(stream->fd);
+	delete stream;
+	stream = nullptr;
 	return 0;
 }
