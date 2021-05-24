@@ -323,14 +323,16 @@ int fputc(int c, FILE *stream) // complete it
 
 	stream->lastop = 'w';
 
-	if((stream->size - (stream->pos + 1)) == 0) 
+	if(stream->actual_size == 0) 
 	{
 		fflush(stream);
+		stream->actual_size = stream->size;
 
 	}
 
 	stream->buffer[stream->pos] = c;
 	stream->pos++;
+	stream->actual_size--;
 	
 	return c;
 }
@@ -365,13 +367,22 @@ char *fgets(char *str, int size, FILE *stream) // complete it
 
 int fputs(const char *str, FILE *stream) // complete it
 {
-	/*
+	int length = sizeof(str);
+	
 	if(stream->flag == O_RDONLY)
 	{
 		return EOF;
 	}
 
-	*/
+	int count = 0;
+	int putReturn;
+
+	while(str[count] != '\0') 
+	{
+		putReturn = fputc(str[count], stream);
+		count++;
+	}
+
 	return 0;
 }
 

@@ -24,7 +24,8 @@ d = 4, fstat = 0
 d = 5, fstat = 0
 Testing fopen(a+)...
 fstat = 0, file size = 5
-={}|:;',./?ABC
 abcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()-+={}|:;',./?ABC
-abcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()-Testing fclose...
+abcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()-+={}|:;',./?ABC
+34567890~!@#$%^&*()-+={}|:;',./?ABC
+abcdefghijklmnopqrstuvwxyz1234567890Testing fclose...
 d = 3, fstat = 0
