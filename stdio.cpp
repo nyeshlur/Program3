@@ -212,7 +212,7 @@ FILE *fopen(const char *path, const char *mode)
 
 int fpurge(FILE *stream)
 {
-	//lseek(stream->fd, (stream->actual_size * -1), SEEK_CUR);
+	lseek(stream->fd, (stream->actual_size * -1), SEEK_CUR);
 	*stream->buffer = '\0';
 	stream->pos = 0;
 	stream->actual_size = 0;
@@ -425,7 +425,7 @@ char *fgets(char *str, int size, FILE *stream)
 
 }
 
-int fputs(const char *str, FILE *stream) // complete it
+int fputs(const char *str, FILE *stream)
 {	
 	if(stream->flag == O_RDONLY)
 	{
@@ -449,24 +449,8 @@ int feof(FILE *stream)
 	return stream->eof == true;
 }
 
-int fseek(FILE *stream, long offset, int whence) // complete it
+int fseek(FILE *stream, long offset, int whence)
 {
-	/*
-	if(stream->lastop == 'r')
-	{
-		fpurge(stream);
-	}
-	int check;
-	check = lseek(stream->fd, offset, whence);
-
-	if(check == -1) {
-		return -1;
-	} 
-	else 
-	{
-		return 0;
-	}
-	*/
 
 	fflush(stream);
 	lseek(stream->fd, offset, whence);
@@ -491,7 +475,7 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 	return 0;
 }
 
-int fclose(FILE *stream) // complete it
+int fclose(FILE *stream)
 {
 	fflush(stream);
 	close(stream->fd);

@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
 	
 	// fopen test
 	printf("Testing fopen(a+)...\n");
-	FILE *file_w4 = fopen("test3.txt", "a+");
+	FILE *file_w4 = fopen("test3.txt", "a+"); //"test3.txt"
 	retval = fstat(3, &file_state);
 	printf("fstat = %d, file size = %d\n", retval, file_state.st_size);
 	
