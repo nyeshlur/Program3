@@ -411,6 +411,7 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 		stream->pos = 0;
 		stream->actual_size = size;
 		stream->eof = false;
+		
 		return 0;
 
 	}

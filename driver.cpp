@@ -62,13 +62,24 @@ int main(int argc, char *argv[])
 	printf("Testing fseek...\n");
 	fseek(file_r, 0, SEEK_SET);
 
+char *data = init_data();
+
+	// fputc test
+	printf("Testing fputc...\n");
+	for (int i = 0; i < DATASIZE; i++) //DATASIZE 8193
+	{
+		fputc(data[i], file_r);
+	}
+
+	fclose(file_r);
+/*
 	// fgets test
 	printf("Testing fgets...\n");
 	while (fgets(buf, 100, file_r) != NULL)
 	{
 		write(1, buf, strlen(buf));
 	}
-	
+	*/
 	// fgetc test
 	printf( "Testing fgetc...\n" );
 	fseek(file_r, -file_state.st_size, SEEK_END);
@@ -101,8 +112,7 @@ int main(int argc, char *argv[])
 		printf( "fd = %d, fstat = %d, file size = %d\n", i, retval, file_state.st_size );
 	}
 	
-	char *data = init_data();
-	/*
+
 	// fwrite test
 	printf("Testing fwrite...\n");
 	for (int i = 0; i < DATASIZE; i += BUFSIZE)
@@ -116,10 +126,10 @@ int main(int argc, char *argv[])
 	{
 		fputs(contents, file_w2);
 	}
-	*/
+	
 	// fputc test
 	printf("Testing fputc...\n");
-	for (int i = 0; i < 8193; i++) //DATASIZE
+	for (int i = 0; i < DATASIZE; i++) //DATASIZE 8193
 	{
 		fputc(data[i], file_w3);
 	}
