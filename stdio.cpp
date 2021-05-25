@@ -212,7 +212,7 @@ FILE *fopen(const char *path, const char *mode)
 
 int fpurge(FILE *stream)
 {
-	
+	//need to do an lseek
 	memset(stream->buffer, '\0', stream->actual_size);
 	stream->pos = 0;
 	stream->actual_size = 0;
@@ -453,7 +453,11 @@ int fclose(FILE *stream) // complete it
 {
 	fflush(stream);
 	close(stream->fd);
-	delete stream;
-	stream = nullptr;
+
+	if(stream->bufown == true) 
+	{
+		delete stream;
+		stream = nullptr;
+	}
 	return 0;
 }
