@@ -406,19 +406,28 @@ char *fgets(char *str, int size, FILE *stream)
 	} else 
 	{
 		str[0] = temp;
-		for(int i = 1; i < size; i++) 
+		for(int i = 1; i < (size - 1); i++) 
 		{
 			temp = fgetc(stream);
 
-			if(temp != EOF) 
+			if(temp != EOF && temp != '\n') 
 			{
 				str[i] = temp;
-			} else 
+			} 
+			else if( temp == '\n')
 			{
+				str[i] = temp;
+				str[i + 1] = '\0';
+				return str;	
+			}
+			else 
+			{
+				str[i + 1] = '\0';
 				return str;
 			}
 		}
 
+		str[size - 1] = '\0';
 		return str;
 
 	}
