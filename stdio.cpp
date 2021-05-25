@@ -212,8 +212,8 @@ FILE *fopen(const char *path, const char *mode)
 
 int fpurge(FILE *stream)
 {
-	lseek(stream->fd, (stream->actual_size * -1), SEEK_CUR);
-	memset(stream->buffer, '\0', stream->actual_size);
+	//lseek(stream->fd, (stream->actual_size * -1), SEEK_CUR);
+	*stream->buffer = '\0';
 	stream->pos = 0;
 	stream->actual_size = 0;
 	
@@ -235,8 +235,11 @@ int fflush(FILE *stream)
 		fpurge(stream);
 	}
 	else {
-
-		write(stream->fd, stream->buffer, stream->size);
+		if(stream->pos != 0) 
+		{
+			stream->lastop = 'w';
+			write(stream->fd, stream->buffer, stream->pos);
+		}
 		fpurge(stream);
 	}
 	
@@ -320,17 +323,6 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 	}
 }
 
-size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
-{	
-	
-	//make sure access isn't read only
-	//if((size * nmemb) > stream->actual_size) {
-
-	//}
-	//write(stream->fd, stream->buffer, stream->actual_size);
-	return 0;
-}
-
 int fputc(int c, FILE *stream) // complete it
 {
 	
@@ -346,11 +338,15 @@ int fputc(int c, FILE *stream) // complete it
 
 	stream->lastop = 'w';
 
-	if(stream->actual_size == 0) 
+	if(stream->actual_size == 0 && stream->pos != 0) 
 	{
 		fflush(stream);
 		stream->actual_size = stream->size;
 
+	} 
+	else if(stream->actual_size == 0 && stream->pos == 0)
+	{
+		stream->actual_size = stream->size;
 	}
 
 	stream->buffer[stream->pos] = c;
@@ -358,6 +354,44 @@ int fputc(int c, FILE *stream) // complete it
 	stream->actual_size--;
 	
 	return c;
+
+}
+
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
+{	
+	if((size * nmemb) > stream->size && stream->actual_size == 0)
+	{
+		int actualWrite = write(stream->fd, ptr, (size * nmemb));
+
+		if (actualWrite == -1) 
+		{
+			return 0;
+
+		} else
+		{
+			return actualWrite / size;
+		}
+	}
+	else
+	{
+		size_t count = 0;
+		int character;
+		int check;
+		const unsigned char *buffPtr = static_cast<const unsigned char *>(ptr);
+
+		while(check != EOF && count < (nmemb * size)) {
+			character = *buffPtr;
+			check = fputc(character, stream);
+			if(check != EOF)
+			{
+				count++;
+				*buffPtr++;
+			}
+		}
+	
+		return count / size;
+	}
+	
 }
 
 char *fgets(char *str, int size, FILE *stream)
@@ -379,6 +413,9 @@ char *fgets(char *str, int size, FILE *stream)
 			if(temp != EOF) 
 			{
 				str[i] = temp;
+			} else 
+			{
+				return str;
 			}
 		}
 
@@ -389,7 +426,7 @@ char *fgets(char *str, int size, FILE *stream)
 }
 
 int fputs(const char *str, FILE *stream) // complete it
-{
+{	
 	if(stream->flag == O_RDONLY)
 	{
 		return EOF;
@@ -403,7 +440,7 @@ int fputs(const char *str, FILE *stream) // complete it
 		putReturn = fputc(str[count], stream);
 		count++;
 	}
-
+	
 	return 0;
 }
 
@@ -414,7 +451,11 @@ int feof(FILE *stream)
 
 int fseek(FILE *stream, long offset, int whence) // complete it
 {
-	fpurge(stream);
+	/*
+	if(stream->lastop == 'r')
+	{
+		fpurge(stream);
+	}
 	int check;
 	check = lseek(stream->fd, offset, whence);
 
@@ -425,7 +466,29 @@ int fseek(FILE *stream, long offset, int whence) // complete it
 	{
 		return 0;
 	}
+	*/
 
+	fflush(stream);
+	lseek(stream->fd, offset, whence);
+
+	if(whence == SEEK_CUR) 
+	{
+		stream->pos += offset;
+	} 
+	else if(whence == SEEK_SET) 
+	{
+		stream->pos = offset;
+	} 
+	else if(whence == SEEK_END)
+	{
+		stream->pos = stream->size - offset;
+	}
+	else 
+	{
+		return -1;
+	}
+
+	return 0;
 }
 
 int fclose(FILE *stream) // complete it
