@@ -31,7 +31,7 @@ class FILE
   int size;        // the buffer size
   int actual_size; // the actual buffer size when read( ) returns # bytes read smaller than size
   int mode;        // _IONBF, _IOLBF, _IOFBF
-  int flag;        // O_RDONLY 
+  int flag;        // O_RDONLY
                    // O_RDWR 
                    // O_WRONLY | O_CREAT | O_TRUNC
                    // O_WRONLY | O_CREAT | O_APPEND

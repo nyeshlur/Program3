@@ -1,3 +1,11 @@
+/*
+Program 3
+Base code provided by rtdimpsey.
+Modified by Nayana Yeshlur.
+
+This program implements file i/o methods found in the Unix original stdio.h.
+*/
+
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/uio.h>
@@ -210,18 +218,27 @@ FILE *fopen(const char *path, const char *mode)
   return stream;
 }
 
+
+/*
+clears an input/output stream buffer
+resets pos and actual_size
+*/
 int fpurge(FILE *stream)
 {
+	//fpurge makes sure that the stream and file are in synch with the call to lseek
+	//if the file pointer moves ahead of the pos in stream, lseek adjusts by going by actual_size from current pointer location
 	lseek(stream->fd, (stream->actual_size * -1), SEEK_CUR);
 	*stream->buffer = '\0';
 	stream->pos = 0;
 	stream->actual_size = 0;
 	
 	return 0;
-
-	//if error occurs return -1, when would an error occur?
 }
 
+/*
+if buffer is being used for input or nothing was written to the buffer, fflush just calls fpurge
+if buffer was written to, a last write call is used to flush the buffer/stream to the file and then fpurge is called
+*/
 int fflush(FILE *stream)
 {
 	
@@ -245,9 +262,13 @@ int fflush(FILE *stream)
 	
 	return 0;
 
-	//if error occurs return EOF, when would an error occur?
 }
 
+/*
+reads a character (one byte) one at a time from a file stream 
+if successful returns character read as an int
+if at end of file, fgetc returns EOF
+*/
 int fgetc(FILE *stream)
 {
 	if(stream->lastop == 'w') {
@@ -264,9 +285,10 @@ int fgetc(FILE *stream)
 		actualSize = read(stream->fd, stream->buffer, stream->size);
 		stream->actual_size = actualSize;
 
+		//if read returns 0, at end of file
 		if(actualSize == 0) {
 			stream->eof = true;
-			return EOF; //what other cases should return EOF?
+			return EOF;
 		}
 
 		stream->pos = 0;
@@ -285,11 +307,17 @@ int fgetc(FILE *stream)
 
 }
 
+/*
+reads from a file
+if successful returns number of elements successfully read
+if number of elements read is less than nmemb, an error occurred or eof was reached
+*/
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
 	if(stream != NULL)
 	{
-
+		//if #of bytes to be read is greater than buffer size and buffer is empty
+		//just do a read system call
 		if((size * nmemb) > stream->size && stream->actual_size == 0) {
 			int actualRead = read(stream->fd, ptr, (size * nmemb));
 			if(actualRead == 0) {
@@ -303,7 +331,9 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 			int character;
 			unsigned char *buffPtr = static_cast<unsigned char *>(ptr);
 
-			while(stream->eof != true && count < (nmemb * size)) {
+			while(stream->eof != true && count < (nmemb * size)) 
+			{
+				//loops through and uses fgetc to grab byte of data from stream
 				character = fgetc(stream);
 				if(stream->eof != true) 
 				{
@@ -323,7 +353,12 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 	}
 }
 
-int fputc(int c, FILE *stream) // complete it
+/*
+writes a character to a file stream
+if successful, the character written to the stream is returned
+if not successful, EOF is returned
+*/
+int fputc(int c, FILE *stream)
 {
 	
 	if(stream->flag == O_RDONLY)
@@ -338,13 +373,14 @@ int fputc(int c, FILE *stream) // complete it
 
 	stream->lastop = 'w';
 
+	//if end of buffer/stream is reached, flush stream
 	if(stream->actual_size == 0 && stream->pos != 0) 
 	{
 		fflush(stream);
 		stream->actual_size = stream->size;
 
-	} 
-	else if(stream->actual_size == 0 && stream->pos == 0)
+	}
+	else if(stream->actual_size == 0 && stream->pos == 0) //if buffer/stream is empty
 	{
 		stream->actual_size = stream->size;
 	}
@@ -357,6 +393,9 @@ int fputc(int c, FILE *stream) // complete it
 
 }
 
+/*
+writes to a file 
+*/
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
 {	
 	if((size * nmemb) > stream->size && stream->actual_size == 0)
@@ -394,6 +433,12 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // compl
 	
 }
 
+
+/*
+reads a character string from a file stream
+stops either because size is reached, EOF is reached, or '\n' is reached
+returns str, unless stream is at eof and nothing was read in which case NULL is returned
+*/
 char *fgets(char *str, int size, FILE *stream)
 {
 	char temp = fgetc(stream);
@@ -417,23 +462,29 @@ char *fgets(char *str, int size, FILE *stream)
 			else if( temp == '\n')
 			{
 				str[i] = temp;
-				str[i + 1] = '\0';
+				str[i + 1] = '\0'; //null byte written at the end
 				return str;	
 			}
 			else 
 			{
-				str[i + 1] = '\0';
+				str[i + 1] = '\0'; //null byte written at the end
 				return str;
 			}
 		}
 
-		str[size - 1] = '\0';
+		str[size - 1] = '\0'; //null byte written at the end
 		return str;
 
 	}
 
 }
 
+/*
+writes a character string to a file stream
+stops when it reaches null byte, does not write it to stream
+if successful returns non-negative number (0)
+if not successful EOF is returned
+*/
 int fputs(const char *str, FILE *stream)
 {	
 	if(stream->flag == O_RDONLY)
@@ -458,11 +509,18 @@ int feof(FILE *stream)
 	return stream->eof == true;
 }
 
+/*
+moves the file position to a specific location in a file 
+adjusts location of pointer in file and pos in stream based on offset and whence
+resets eof flag to false
+*/
 int fseek(FILE *stream, long offset, int whence)
 {
 
 	fflush(stream);
 	lseek(stream->fd, offset, whence);
+
+	stream->eof = false;
 
 	if(whence == SEEK_CUR) 
 	{
@@ -484,6 +542,12 @@ int fseek(FILE *stream, long offset, int whence)
 	return 0;
 }
 
+/*
+closes a file
+flushes stream (writes anything from output buffer, or just purges input buffer)
+close file descriptor
+if buffer is owend by stdio, memory is deallocated
+*/
 int fclose(FILE *stream)
 {
 	fflush(stream);
