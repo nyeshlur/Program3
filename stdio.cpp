@@ -309,7 +309,7 @@ int fgetc(FILE *stream)
 }
 
 /*
-reads from a file
+reads from a buffer stream or file
 if successful returns number of elements successfully read
 if number of elements read is less than nmemb, an error occurred or eof was reached
 */
@@ -417,7 +417,7 @@ int fputc(int c, FILE *stream)
 }
 
 /*
-writes to a file 
+writes to a buffer stream or file
 if successful returns, number of elements successfully written
 if number of elements written is less than nmemb, an error occurred or eof was reached
 */
@@ -439,6 +439,8 @@ size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 
 	if((size * nmemb) > stream->size && stream->actual_size == 0)
 	{
+		//if #of bytes to be written is greater than buffer size and buffer is empty
+		//just do a write system call
 		int actualWrite = write(stream->fd, ptr, (size * nmemb));
 
 		if (actualWrite == -1) 
