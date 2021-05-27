@@ -271,6 +271,7 @@ if at end of file, fgetc returns EOF
 */
 int fgetc(FILE *stream)
 {
+
 	if(stream->lastop == 'w') {
 		fpurge(stream);
 	}
@@ -314,6 +315,20 @@ if number of elements read is less than nmemb, an error occurred or eof was reac
 */
 size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
+
+	if(stream->mode == _IONBF) {
+		int readNum = read(stream->fd, ptr, (size * nmemb));
+
+			if (readNum == -1) 
+			{
+				return 0;
+
+			} else
+			{
+				return readNum / size;
+			}
+	}
+
 	if(stream != NULL)
 	{
 		//if #of bytes to be read is greater than buffer size and buffer is empty
@@ -323,8 +338,16 @@ size_t fread(void *ptr, size_t size, size_t nmemb, FILE *stream)
 			if(actualRead == 0) {
 				stream->eof = true;
 			}
-			return actualRead / size;
-		} 
+
+			if (actualRead == -1) 
+			{
+				return 0;
+
+			} else
+			{
+				return actualRead / size;
+			}
+		}
 		else 
 		{
 			size_t count = 0;
@@ -395,9 +418,25 @@ int fputc(int c, FILE *stream)
 
 /*
 writes to a file 
+if successful returns, number of elements successfully written
+if number of elements written is less than nmemb, an error occurred or eof was reached
 */
 size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
 {	
+
+	if(stream->mode == _IONBF) {
+		int writeNum = write(stream->fd, ptr, (size * nmemb));
+
+		if (writeNum == -1) 
+		{
+			return 0;
+
+		} else
+		{
+			return writeNum / size;
+		}
+	}
+
 	if((size * nmemb) > stream->size && stream->actual_size == 0)
 	{
 		int actualWrite = write(stream->fd, ptr, (size * nmemb));
