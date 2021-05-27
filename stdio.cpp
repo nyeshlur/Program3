@@ -421,7 +421,7 @@ writes to a file
 if successful returns, number of elements successfully written
 if number of elements written is less than nmemb, an error occurred or eof was reached
 */
-size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream) // complete it
+size_t fwrite(const void *ptr, size_t size, size_t nmemb, FILE *stream)
 {	
 
 	if(stream->mode == _IONBF) {
