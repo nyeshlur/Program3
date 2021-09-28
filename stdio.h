@@ -1,3 +1,9 @@
+/*
+Program 3
+Base code provided by rtdimpsey.
+This program implements file i/o methods found in the Unix original stdio.h.
+*/
+
 #ifndef _MY_STDIO_H_
 #define _MY_STDIO_H_
 
