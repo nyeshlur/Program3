@@ -1,3 +1,9 @@
+/*
+Program 3
+Base code provided by rtdimpsey.
+This is a driver for the program that implements file i/o methods found in the Unix original stdio.h.
+*/
+
 #include "stdio.h" //"stdio.h" or <stdio.h>
 #include <fcntl.h> 
 #include <sys/time.h> 
